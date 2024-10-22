@@ -95,8 +95,8 @@ const AllApplicationsPage = () => {
             >
               <thead
                 className={`${
-                  darkMode ? "bg-gray-700" : "bg-indigo-100"
-                } text-gray-200`} // Adjusted text color for better visibility
+                  darkMode ? "bg-gray-900" : "bg-gray-200"
+                } text-gray-100`} // Updated colors for better visibility
               >
                 <tr>
                   <th className="border px-2 py-2 text-sm md:px-4 md:py-2">#</th>
