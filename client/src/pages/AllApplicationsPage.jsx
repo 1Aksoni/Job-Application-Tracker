@@ -8,6 +8,7 @@ const AllApplicationsPage = () => {
   const { darkMode } = useTheme(); // Get dark mode state
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sortOrder, setSortOrder] = useState("asc"); // State for sorting order
 
   // Fetch applications on component mount
   useEffect(() => {
@@ -24,6 +25,15 @@ const AllApplicationsPage = () => {
 
     fetchApplications();
   }, []);
+
+  // Sort applications by date
+  const sortApplicationsByDate = (applications, order) => {
+    return [...applications].sort((a, b) => {
+      const dateA = new Date(a.appliedDate);
+      const dateB = new Date(b.appliedDate);
+      return order === "asc" ? dateA - dateB : dateB - dateA; // Ascending or descending
+    });
+  };
 
   // Change application status
   const handleStatusChange = async (id, newStatus) => {
@@ -61,6 +71,11 @@ const AllApplicationsPage = () => {
     }
   };
 
+  // Toggle sort order
+  const toggleSortOrder = () => {
+    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+  };
+
   // Loading state
   if (loading) {
     return (
@@ -74,6 +89,9 @@ const AllApplicationsPage = () => {
     );
   }
 
+  // Sort applications based on current sortOrder
+  const sortedApplications = sortApplicationsByDate(applications, sortOrder);
+
   return (
     <div
       className={`min-h-screen ${
@@ -85,8 +103,18 @@ const AllApplicationsPage = () => {
           All Job Applications
         </h2>
 
+        {/* Sort Button */}
+        <button
+          onClick={toggleSortOrder}
+          className={`mb-4 p-2 rounded ${
+            darkMode ? "bg-indigo-600 text-white" : "bg-indigo-200"
+          }`}
+        >
+          Sort by Date ({sortOrder === "asc" ? "Ascending" : "Descending"})
+        </button>
+
         {/* Applications Table */}
-        {applications.length > 0 ? (
+        {sortedApplications.length > 0 ? (
           <div className="overflow-x-auto">
             <table
               className={`min-w-full border border-gray-300 shadow-lg rounded-lg ${
@@ -124,7 +152,7 @@ const AllApplicationsPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {applications.map((application, index) => (
+                {sortedApplications.map((application, index) => (
                   <tr
                     key={application._id}
                     className={`transition duration-200 ${
